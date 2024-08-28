@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const workoutSchema = new mongoose.Schema({
+const workoutSchema = new Schema({
+    userId: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'User', 
+        required: true 
+    },
     name: {
         type: String,
         required: [true, 'Workout Name is Required']
@@ -16,7 +22,7 @@ const workoutSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'Pending'
-    }
+    }    
 });
 
 module.exports = mongoose.model('Workout', workoutSchema);

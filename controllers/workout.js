@@ -1,24 +1,32 @@
 const Workout = require("../models/Workout");
 
-module.exports.addWorkout = (req,res) => {
-    
-	let newWorkout = new Workout({
-		name : req.body.name,
-		duration : req.body.duration
-	});
+module.exports.addWorkout = (req, res) => {
+  const { name, duration, userId } = req.body;
 
-	return newWorkout.save()
-	.then((Workout) => res.status(201).send({Workout}))
-	.catch(err => res.status(500).send({ error: "Error in Save", details: err}))  
+  // Log the received data to verify userId is being sent
+  console.log('Received data:', { name, duration, userId });
+
+  let newWorkout = new Workout({
+    name,
+    duration,
+    userId  // Save the userId
+  });
+
+  return newWorkout.save()
+    .then(workout => res.status(201).send({ Workout: workout }))
+    .catch(err => res.status(500).send({ error: "Error in Save", details: err }));
 };
+
+
 
 module.exports.getMyWorkouts = (req, res) => {
+  const userId = req.user._id;
 
-	return Workout.find()
-	.then(workouts => res.status(200).send({ workouts }))
-	.catch(err => res.status(500).send({ error: "Error in Find", details: err}))
-
+  return Workout.find({ userId: userId })
+    .then(workouts => res.status(200).send({ workouts }))
+    .catch(err => res.status(500).send({ error: "Error in Find", details: err }));
 };
+
 
 module.exports.updateWorkout = (req, res) => {
     

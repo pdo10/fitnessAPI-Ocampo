@@ -34,9 +34,24 @@ module.exports.loginUser = (req, res) => {
 						message: 'User logged in successfully.',
 						access : auth.createAccessToken(result)})
 				} else {
+
 					return res.status(401).send({ error: "Email and password do not match" });
 				}
 			}
 		})
 		.catch(err => res.status(500).send({ error: "Error in find" }))
+};
+
+module.exports.getProfile = (req, res) => {
+	User.findById(req.user.id)
+    .then(user => {
+
+    	if(!user) {
+            return res.status(404).send({ message: 'User not found' })
+
+    	} 
+    	user.password = "";
+	    return res.status(200).send({user: user});   		
+    })
+    .catch(err => errorHandler(err, req, res));
 };
